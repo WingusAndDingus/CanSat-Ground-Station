@@ -6,13 +6,6 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 
-# from matplotlib.figure import Figure
-
-# from GUI_files.test import generate_data
-# from GUI_files.gui import window
-# from GUI_files.test2 import update_plot
-
-
 class Ground_Station:
     def __init__(self):
         self.data = {
@@ -73,17 +66,15 @@ class Ground_Station:
         self.gps_sats_data = [0]
 
         self.alt_fig, self.alt_ax = plt.subplots()
-        self.alt_ax.title.set_text('Altitude')
         self.alt_line, = self.alt_ax.plot(range(0,len(self.altitude_data)), self.altitude_data)
-        # self.alt_line.set_animated(True)
         self.alt_canvas = FigureCanvasTkAgg(self.alt_fig, self.window)
         self.alt_canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
 
         self.temp_fig, self.temp_ax = plt.subplots()
-        self.temp_line, = self.temp_ax.plot(len(self.temperature_data), self.temperature_data, 'ro')
+        self.temp_line, = self.temp_ax.plot(range(0,len(self.temperature_data)), self.temperature_data)
         self.temp_canvas = FigureCanvasTkAgg(self.temp_fig, self.window)
-        self.temp_canvas.get_tk_widget().pack()
+        self.temp_canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
         # self.pressure_fig, self.pressure_ax = plt.subplots()
         # self.pressure_line, = self.pressure_ax.plot(len(self.pressure_data), self.pressure_data, 'ro')
@@ -159,10 +150,15 @@ class Ground_Station:
     def update_plots(self):
         self.generate_data()
         self.alt_ax.clear()
+        self.alt_ax.set_title('Altitude (m)')
         self.alt_line, = self.alt_ax.plot(range(0,len(self.altitude_data)), self.altitude_data)
         self.alt_canvas.draw()
 
         # self.
+        self.temp_ax.clear()
+        self.temp_ax.set_title('Temperature (C)')
+        self.temp_line, = self.temp_ax.plot(range(len(self.temperature_data)), self.temperature_data)
+        self.temp_canvas.draw()
 
         self.window.after(100, self.update_plots)
 
