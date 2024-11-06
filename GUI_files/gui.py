@@ -3,6 +3,7 @@ from tkinter import ttk
 from matplotlib.figure import Figure
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
+plt.rcParams.update({'font.size': 14})
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 
@@ -68,46 +69,53 @@ class Ground_Station:
         self.alt_fig, self.alt_ax = plt.subplots()
         self.alt_line, = self.alt_ax.plot(range(0,len(self.altitude_data)), self.altitude_data)
         self.alt_canvas = FigureCanvasTkAgg(self.alt_fig, self.window)
-        self.alt_canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-
+        self.alt_canvas.get_tk_widget().grid(row=0, column=0, sticky="nsew")
 
         self.temp_fig, self.temp_ax = plt.subplots()
         self.temp_line, = self.temp_ax.plot(range(0,len(self.temperature_data)), self.temperature_data)
         self.temp_canvas = FigureCanvasTkAgg(self.temp_fig, self.window)
-        self.temp_canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        self.temp_canvas.get_tk_widget().grid(row=0, column=1, sticky="nsew")
 
-        # self.pressure_fig, self.pressure_ax = plt.subplots()
-        # self.pressure_line, = self.pressure_ax.plot(len(self.pressure_data), self.pressure_data, 'ro')
-        # self.pressure_canvas = FigureCanvasTkAgg(self.pressure_fig, self.window)
-        # self.pressure_canvas.get_tk_widget().pack()
-        #
-        # self.volt_fig, self.volt_ax = plt.subplots()
-        # self.volt_line, = self.volt_ax.plot(len(self.voltage_data), self.voltage_data, 'ro')
-        # self.volt_canvas = FigureCanvasTkAgg(self.volt_fig, self.window)
-        # self.volt_canvas.get_tk_widget().pack()
-        #
-        # self.gyro_r_fig, self.gyro_r_ax = plt.subplots()
-        # self.gyro_r_line, = self.gyro_r_ax.plot(len(self.gyro_r_data), self.gyro_r_data, 'ro')
-        # self.gyro_r_canvas = FigureCanvasTkAgg(self.gyro_r_fig, self.window)
-        # self.gyro_r_canvas.get_tk_widget().pack()
-        #
-        # self.gyro_p_fig, self.gyro_p_ax = plt.subplots()
-        # self.gyro_p_line, = self.gyro_p_ax.plot(len(self.gyro_p_data), self.gyro_p_data, 'ro')
-        # self.gyro_p_canvas = FigureCanvasTkAgg(self.gyro_p_fig, self.window)
-        # self.gyro_p_canvas.get_tk_widget().pack()
+        self.pressure_fig, self.pressure_ax = plt.subplots()
+        self.pressure_line, = self.pressure_ax.plot(len(self.pressure_data), self.pressure_data)
+        self.pressure_canvas = FigureCanvasTkAgg(self.pressure_fig, self.window)
+        self.pressure_canvas.get_tk_widget().grid(row=0, column=2, sticky="nsew")
 
-        # self.gyro_y_fig, self.gyro_y_ax = plt.subplots()
-        # self.gyro_y_line, = self.gyro_y_ax.plot(len(self.gyro_self.altitude_data), self.gyro_self.altitude_data, 'ro')
-        #
-        # self.accel_r_fig, self.accel_r_ax = plt.subplots()
-        # self.accel_r_line, = self.accel_r_ax.plot(len(self.accel_r_data), self.accel_r_data, 'ro')
-        #
-        # self.accel_p_fig, self.accel_p_ax = plt.subplots()
-        # self.accel_p_line, = self.accel_p_ax.plot(len(self.accel_p_data), self.accel_p_data, 'ro')
-        #
-        # self.accel_y_fig, self.accel_y_ax = plt.subplots()
-        # self.accel_y_line, = self.accel_y_ax.plot(len(self.accel_self.altitude_data), self.accel_self.altitude_data, 'ro')
-        #
+        self.volt_fig, self.volt_ax = plt.subplots()
+        self.volt_line, = self.volt_ax.plot(len(self.voltage_data), self.voltage_data)
+        self.volt_canvas = FigureCanvasTkAgg(self.volt_fig, self.window)
+        self.volt_canvas.get_tk_widget().grid(row=1, column=0, sticky="nsew")
+
+        self.gyro_r_fig, self.gyro_r_ax = plt.subplots()
+        self.gyro_r_line, = self.gyro_r_ax.plot(len(self.gyro_r_data), self.gyro_r_data)
+        self.gyro_r_canvas = FigureCanvasTkAgg(self.gyro_r_fig, self.window)
+        self.gyro_r_canvas.get_tk_widget().grid(row=1, column=1, sticky="nsew")
+
+        self.gyro_p_fig, self.gyro_p_ax = plt.subplots()
+        self.gyro_p_line, = self.gyro_p_ax.plot(len(self.gyro_p_data), self.gyro_p_data)
+        self.gyro_p_canvas = FigureCanvasTkAgg(self.gyro_p_fig, self.window)
+        self.gyro_p_canvas.get_tk_widget().grid(row=1, column=2, sticky="nsew")
+
+        self.gyro_y_fig, self.gyro_y_ax = plt.subplots()
+        self.gyro_y_line, = self.gyro_y_ax.plot(len(self.gyro_y_data), self.gyro_y_data)
+        self.gyro_y_canvas = FigureCanvasTkAgg(self.gyro_y_fig, self.window)
+        self.gyro_y_canvas.get_tk_widget().grid(row=2, column=0, sticky="nsew")
+
+        self.accel_r_fig, self.accel_r_ax = plt.subplots()
+        self.accel_r_line, = self.accel_r_ax.plot(len(self.accel_r_data), self.accel_r_data)
+        self.accel_r_canvas = FigureCanvasTkAgg(self.accel_r_fig, self.window)
+        self.accel_r_canvas.get_tk_widget().grid(row=2, column=1, sticky="nsew")
+
+        self.accel_p_fig, self.accel_p_ax = plt.subplots()
+        self.accel_p_line, = self.accel_p_ax.plot(len(self.accel_p_data), self.accel_p_data)
+        self.accel_p_canvas = FigureCanvasTkAgg(self.accel_p_fig, self.window)
+        self.accel_p_canvas.get_tk_widget().grid(row=2, column=2, sticky="nsew")
+
+        self.accel_y_fig, self.accel_y_ax = plt.subplots()
+        self.accel_y_line, = self.accel_y_ax.plot(len(self.accel_y_data), self.accel_y_data)
+        self.accel_y_canvas = FigureCanvasTkAgg(self.accel_y_fig, self.window)
+        self.accel_y_canvas.get_tk_widget().grid(row=3, column=0, sticky="nsew")
+
         # self.mag_r_fig, self.mag_r_ax = plt.subplots()
         # self.mag_r_line, = self.mag_r_ax.plot(len(self.mag_r_data), self.mag_r_data, 'ro')
         #
@@ -147,6 +155,54 @@ class Ground_Station:
         else:
             self.temperature_data.append(np.random.randint(0, 10))
 
+        if (len(self.pressure_data) >= 5):
+            self.pressure_data.pop(0)
+            self.pressure_data.append(np.random.randint(0, 20))
+        else:
+            self.pressure_data.append(np.random.randint(0, 20))
+
+        if (len(self.voltage_data) >= 5):
+            self.voltage_data.pop(0)
+            self.voltage_data.append(np.random.randint(0, 10))
+        else:
+            self.voltage_data.append(np.random.randint(0, 10))
+
+        if (len(self.gyro_r_data) >= 5):
+            self.gyro_r_data.pop(0)
+            self.gyro_r_data.append(np.random.randint(0, 10))
+        else:
+            self.gyro_r_data.append(np.random.randint(0, 10))
+
+        if (len(self.gyro_p_data) >= 5):
+            self.gyro_p_data.pop(0)
+            self.gyro_p_data.append(np.random.randint(0, 10))
+        else:
+            self.gyro_p_data.append(np.random.randint(0, 10))
+
+        if (len(self.gyro_y_data) >= 5):
+            self.gyro_y_data.pop(0)
+            self.gyro_y_data.append(np.random.randint(0, 10))
+        else:
+            self.gyro_y_data.append(np.random.randint(0, 10))
+
+        if (len(self.accel_r_data) >= 5):
+            self.accel_r_data.pop(0)
+            self.accel_r_data.append(np.random.randint(0, 10))
+        else:
+            self.accel_r_data.append(np.random.randint(0, 10))
+
+        if (len(self.accel_p_data) >= 5):
+            self.accel_p_data.pop(0)
+            self.accel_p_data.append(np.random.randint(0, 20))
+        else:
+            self.accel_p_data.append(np.random.randint(0,20))
+
+        if (len(self.accel_y_data) >= 5):
+            self.accel_y_data.pop(0)
+            self.accel_y_data.append(np.random.randint(0,10))
+        else:
+            self.accel_y_data.append(np.random.randint(0,10))
+
     def update_plots(self):
         self.generate_data()
         self.alt_ax.clear()
@@ -154,15 +210,73 @@ class Ground_Station:
         self.alt_line, = self.alt_ax.plot(range(0,len(self.altitude_data)), self.altitude_data)
         self.alt_canvas.draw()
 
-        # self.
         self.temp_ax.clear()
         self.temp_ax.set_title('Temperature (C)')
         self.temp_line, = self.temp_ax.plot(range(len(self.temperature_data)), self.temperature_data)
         self.temp_canvas.draw()
 
-        self.window.after(100, self.update_plots)
+        self.pressure_ax.clear()
+        self.pressure_ax.set_title('Pressure (kPa)')
+        self.pressure_line, = self.pressure_ax.plot(range(len(self.pressure_data)), self.pressure_data)
+        self.pressure_canvas.draw()
+
+        self.volt_ax.clear()
+        self.volt_ax.set_title('Voltage (V)')
+        self.volt_line, = self.volt_ax.plot(range(len(self.voltage_data)), self.voltage_data)
+        self.volt_canvas.draw()
+
+        self.gyro_r_ax.clear()
+        self.gyro_r_ax.set_title('Gyro R (m/s)')
+        self.gyro_r_line, = self.gyro_r_ax.plot(range(len(self.gyro_r_data)), self.gyro_r_data)
+        self.gyro_r_canvas.draw()
+
+        self.gyro_p_ax.clear()
+        self.gyro_p_ax.set_title('Gyro P (m/s)')
+        self.gyro_p_line, = self.gyro_p_ax.plot(range(len(self.gyro_p_data)), self.gyro_p_data)
+        self.gyro_p_canvas.draw()
+
+        self.gyro_y_ax.clear()
+        self.gyro_y_ax.set_title('Gyro Y (m/s)')
+        self.gyro_y_line, = self.gyro_y_ax.plot(range(len(self.gyro_y_data)), self.gyro_y_data)
+        self.gyro_y_canvas.draw()
+
+        self.accel_r_ax.clear()
+        self.accel_r_ax.set_title('Roll Acceleration (m/s^2)')
+        self.accel_r_line, = self.accel_r_ax.plot(range(len(self.accel_r_data)), self.accel_r_data)
+        self.accel_r_canvas.draw()
+
+        self.accel_p_ax.clear()
+        self.accel_p_ax.set_title('Pitch Acceleration (m/s^2)')
+        self.accel_p_line, = self.accel_p_ax.plot(range(len(self.accel_p_data)), self.accel_p_data)
+        self.accel_p_canvas.draw()
+
+        self.accel_y_ax.clear()
+        self.accel_y_ax.set_title('Yaw Acceleration (m/s^2)')
+        self.accel_y_line, = self.accel_y_ax.plot(range(len(self.accel_y_data)), self.accel_y_data)
+        self.accel_y_canvas.draw()
+
+        self.window.after(500, self.update_plots)
+
+    def create_grid(self):
+        grid = 5
+        for i in range(0,5):
+            self.window.grid_rowconfigure(i, weight=1)
+        self.window.grid_columnconfigure(0, weight=1)
+        self.window.grid_columnconfigure(1, weight=1)
+        self.window.grid_columnconfigure(2, weight=1)
+        
 
     def gui(self):
+        width = self.window.winfo_screenwidth()
+        height = self.window.winfo_screenheight()
+        self.window.geometry("%dx%d" % (width, height))
+        self.create_grid()
+        # self.window.grid_rowconfigure(0, weight=1)
+        # self.window.grid_rowconfigure(1, weight=1)
+        # self.window.grid_rowconfigure(2, weight=1)
+        # self.window.grid_rowconfigure(3, weight=1)
+
+        # self.window
         self.window.after(500, self.update_plots)
         self.window.mainloop()
 
