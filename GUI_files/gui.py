@@ -9,7 +9,7 @@ import numpy as np
 
 class Ground_Station:
     def __init__(self):
-        self.data = {
+        self.data = { # I just used this as a way to get the format of the packets out, we don't need to use it for anything and can be deleted eventually if not used
             'TEAM_ID': 2031, # FIXME : Add actual team id
             'MISSION_TIME': '00:00:00', # UTC time in hh:mm:ss
             'PACKET_COUNT': 0, # The total count of transmitted packets since turned on reset to zero by command when the CanSat is installed in the rocket on the launch pad at the beginning of the mission and maintained through processor reset.
@@ -36,17 +36,14 @@ class Ground_Station:
             'GPS_SATS': 0, # The number of GPS satellites being tracked by the GPS receiver
             'CMD_ECHO': 'CXON' # The text of the last command received and processed by the Cansat
         }
-        # self.csv_path = csv_path
-        #
-        # try:
-        #     f = open(self.csv_path)
-        #     self.df = pd.read_csv(self.csv_file_path)  # Checks to see if the csv file exists.
-        # except:
-        #     print("Could not open CSV file: ", self.csv_path)
 
+        # This just makes the window, sets title, and allows it to be resizable
         self.window = tk.Tk()
         self.window.title('Ground Station')
+        self.window.resizable(True, True)
 
+        # This is where the graphs will take their data from
+        # For final implementation another array for time stamps will be used (hopefully)
         self.altitude_data = [0]
         self.temperature_data = [0]
         self.pressure_data = [0]
@@ -65,11 +62,15 @@ class Ground_Station:
         self.gps_latitude_data = [0]
         self.gps_longitude_data = [0]
         self.gps_sats_data = [0]
+        self.telemetry_time = [0] # Used for timestamps
 
-        self.alt_fig, self.alt_ax = plt.subplots()
-        self.alt_line, = self.alt_ax.plot(range(0,len(self.altitude_data)), self.altitude_data)
-        self.alt_canvas = FigureCanvasTkAgg(self.alt_fig, self.window)
-        self.alt_canvas.get_tk_widget().grid(row=0, column=0, sticky="nsew")
+        # This is basically a template for all of the plots of data
+        self.alt_fig, self.alt_ax = plt.subplots() # Initializes the figure and axes that will be used
+        self.alt_line, = self.alt_ax.plot(range(0,len(self.altitude_data)), self.altitude_data) # Creates the line that will be displayed
+        self.alt_canvas = FigureCanvasTkAgg(self.alt_fig, self.window) # This is what stores the plot and allows it to be displayed in a TKinter window
+        self.alt_canvas.get_tk_widget().grid(row=0, column=0, sticky="nsew") # Place the canvas so that all the graphs can be aligned
+        # The 'sticky' variable basically just lets the canvas take up its entire "section" of the window
+        # I don't actually know what the documentation says it is, that's just my understanding
 
         self.temp_fig, self.temp_ax = plt.subplots()
         self.temp_line, = self.temp_ax.plot(range(0,len(self.temperature_data)), self.temperature_data)
@@ -77,70 +78,102 @@ class Ground_Station:
         self.temp_canvas.get_tk_widget().grid(row=0, column=1, sticky="nsew")
 
         self.pressure_fig, self.pressure_ax = plt.subplots()
-        self.pressure_line, = self.pressure_ax.plot(len(self.pressure_data), self.pressure_data)
+        self.pressure_line, = self.pressure_ax.plot(range(len(self.pressure_data)), self.pressure_data)
         self.pressure_canvas = FigureCanvasTkAgg(self.pressure_fig, self.window)
         self.pressure_canvas.get_tk_widget().grid(row=0, column=2, sticky="nsew")
 
         self.volt_fig, self.volt_ax = plt.subplots()
-        self.volt_line, = self.volt_ax.plot(len(self.voltage_data), self.voltage_data)
+        self.volt_line, = self.volt_ax.plot(range(len(self.voltage_data)), self.voltage_data)
         self.volt_canvas = FigureCanvasTkAgg(self.volt_fig, self.window)
-        self.volt_canvas.get_tk_widget().grid(row=1, column=0, sticky="nsew")
+        self.volt_canvas.get_tk_widget().grid(row=0, column=3, sticky="nsew")
 
         self.gyro_r_fig, self.gyro_r_ax = plt.subplots()
-        self.gyro_r_line, = self.gyro_r_ax.plot(len(self.gyro_r_data), self.gyro_r_data)
+        self.gyro_r_line, = self.gyro_r_ax.plot(range(len(self.gyro_r_data)), self.gyro_r_data)
         self.gyro_r_canvas = FigureCanvasTkAgg(self.gyro_r_fig, self.window)
-        self.gyro_r_canvas.get_tk_widget().grid(row=1, column=1, sticky="nsew")
+        self.gyro_r_canvas.get_tk_widget().grid(row=1, column=0, sticky="nsew")
 
         self.gyro_p_fig, self.gyro_p_ax = plt.subplots()
-        self.gyro_p_line, = self.gyro_p_ax.plot(len(self.gyro_p_data), self.gyro_p_data)
+        self.gyro_p_line, = self.gyro_p_ax.plot(range(len(self.gyro_p_data)), self.gyro_p_data)
         self.gyro_p_canvas = FigureCanvasTkAgg(self.gyro_p_fig, self.window)
-        self.gyro_p_canvas.get_tk_widget().grid(row=1, column=2, sticky="nsew")
+        self.gyro_p_canvas.get_tk_widget().grid(row=1, column=1, sticky="nsew")
 
         self.gyro_y_fig, self.gyro_y_ax = plt.subplots()
-        self.gyro_y_line, = self.gyro_y_ax.plot(len(self.gyro_y_data), self.gyro_y_data)
+        self.gyro_y_line, = self.gyro_y_ax.plot(range(len(self.gyro_y_data)), self.gyro_y_data)
         self.gyro_y_canvas = FigureCanvasTkAgg(self.gyro_y_fig, self.window)
-        self.gyro_y_canvas.get_tk_widget().grid(row=2, column=0, sticky="nsew")
+        self.gyro_y_canvas.get_tk_widget().grid(row=1, column=2, sticky="nsew")
 
         self.accel_r_fig, self.accel_r_ax = plt.subplots()
-        self.accel_r_line, = self.accel_r_ax.plot(len(self.accel_r_data), self.accel_r_data)
+        self.accel_r_line, = self.accel_r_ax.plot(range(len(self.accel_r_data)), self.accel_r_data)
         self.accel_r_canvas = FigureCanvasTkAgg(self.accel_r_fig, self.window)
-        self.accel_r_canvas.get_tk_widget().grid(row=2, column=1, sticky="nsew")
+        self.accel_r_canvas.get_tk_widget().grid(row=1, column=3, sticky="nsew")
 
         self.accel_p_fig, self.accel_p_ax = plt.subplots()
-        self.accel_p_line, = self.accel_p_ax.plot(len(self.accel_p_data), self.accel_p_data)
+        self.accel_p_line, = self.accel_p_ax.plot(range(len(self.accel_p_data)), self.accel_p_data)
         self.accel_p_canvas = FigureCanvasTkAgg(self.accel_p_fig, self.window)
-        self.accel_p_canvas.get_tk_widget().grid(row=2, column=2, sticky="nsew")
+        self.accel_p_canvas.get_tk_widget().grid(row=2, column=0, sticky="nsew")
 
         self.accel_y_fig, self.accel_y_ax = plt.subplots()
         self.accel_y_line, = self.accel_y_ax.plot(len(self.accel_y_data), self.accel_y_data)
         self.accel_y_canvas = FigureCanvasTkAgg(self.accel_y_fig, self.window)
-        self.accel_y_canvas.get_tk_widget().grid(row=3, column=0, sticky="nsew")
+        self.accel_y_canvas.get_tk_widget().grid(row=2, column=1, sticky="nsew")
 
-        # self.mag_r_fig, self.mag_r_ax = plt.subplots()
-        # self.mag_r_line, = self.mag_r_ax.plot(len(self.mag_r_data), self.mag_r_data, 'ro')
-        #
-        # self.mag_p_fig, self.mag_p_ax = plt.subplots()
-        # self.mag_p_line, = self.mag_p_ax.plot(len(self.mag_p_data), self.mag_p_data, 'ro')
-        #
-        # self.mag_y_fig, self.mag_y_ax = plt.subplots()
-        # self.mag_y_line, = self.mag_y_ax.plot(len(self.mag_self.altitude_data), self.mag_self.altitude_data, 'ro')
-        #
-        # self.auto_gyro_rotate_rate_fig, self.auto_gyro_rotate_rate_ax = plt.subplots()
-        # self.auto_gyro_rotate_rate_line, = self.auto_gyro_rotate_rate_ax.plot(len(self.auto_gyro_rotate_rate_data), self.auto_gyro_rotate_rate_data, 'ro')
-        #
-        # self.gps_alt_fig, self.gps_alt_ax = plt.subplots()
-        # self.gps_alt_line, = self.gps_alt_ax.plot(len(self.gps_altitude_data), self.gps_altitude_data, 'ro')
-        #
-        # self.gps_lat_fig, self.gps_lat_ax = plt.subplots()
-        # self.gps_lat_line, = self.gps_lat_ax.plot(len(self.gps_latitude_data), self.gps_latitude_data, 'ro')
-        #
-        # self.gps_lon_fig, self.gps_lon_ax = plt.subplots()
-        # self.gps_lon_line, = self.gps_lon_ax.plot(len(self.gps_longitude_data), self.gps_longitude_data, 'ro')
-        #
-        # self.gps_sats_fig, self.gps_sats_ax = plt.subplots()
-        # self.gps_sats_lin, = self.gps_sats_ax.plot(len(self.gps_sats_data), self.gps_sats_data, 'ro')
-        #
-        # self.
+        self.mag_r_fig, self.mag_r_ax = plt.subplots()
+        self.mag_r_line, = self.mag_r_ax.plot(len(self.mag_r_data), self.mag_r_data)
+        self.mag_r_canvas = FigureCanvasTkAgg(self.mag_r_fig, self.window)
+        self.mag_r_canvas.get_tk_widget().grid(row=2, column=2, sticky="nsew")
+
+        self.mag_p_fig, self.mag_p_ax = plt.subplots()
+        self.mag_p_line, = self.mag_p_ax.plot(len(self.mag_p_data), self.mag_p_data)
+        self.mag_p_canvas = FigureCanvasTkAgg(self.mag_p_fig, self.window)
+        self.mag_p_canvas.get_tk_widget().grid(row=2, column=3, sticky="nsew")
+
+        self.mag_y_fig, self.mag_y_ax = plt.subplots()
+        self.mag_y_line, = self.mag_y_ax.plot(len(self.mag_y_data), self.mag_y_data)
+        self.mag_y_canvas = FigureCanvasTkAgg(self.mag_y_fig, self.window)
+        self.mag_y_canvas.get_tk_widget().grid(row=3, column=0, sticky="nsew")
+
+        self.auto_gyro_rotate_rate_fig, self.auto_gyro_rotate_rate_ax = plt.subplots()
+        self.auto_gyro_rotate_rate_line, = self.auto_gyro_rotate_rate_ax.plot(len(self.auto_gyro_rotate_rate_data), self.auto_gyro_rotate_rate_data)
+        self.auto_gyro_rotate_rate_canvas = FigureCanvasTkAgg(self.auto_gyro_rotate_rate_fig, self.window)
+        self.auto_gyro_rotate_rate_canvas.get_tk_widget().grid(row=3, column=1, sticky="nsew")
+
+        self.gps_alt_fig, self.gps_alt_ax = plt.subplots()
+        self.gps_alt_line, = self.gps_alt_ax.plot(len(self.gps_altitude_data), self.gps_altitude_data)
+        self.gps_alt_canvas = FigureCanvasTkAgg(self.gps_alt_fig, self.window)
+        self.gps_alt_canvas.get_tk_widget().grid(row=3, column=2, sticky="nsew")
+
+        self.gps_lat_fig, self.gps_lat_ax = plt.subplots()
+        self.gps_lat_line, = self.gps_lat_ax.plot(len(self.gps_latitude_data), self.gps_latitude_data)
+        self.gps_lat_canvas = FigureCanvasTkAgg(self.gps_lat_fig, self.window)
+        self.gps_lat_canvas.get_tk_widget().grid(row=3, column=3, sticky="nsew")
+
+        self.gps_lon_fig, self.gps_lon_ax = plt.subplots()
+        self.gps_lon_line, = self.gps_lon_ax.plot(len(self.gps_longitude_data), self.gps_longitude_data)
+        self.gps_lon_canvas = FigureCanvasTkAgg(self.gps_lon_fig, self.window)
+        self.gps_lon_canvas.get_tk_widget().grid(row=4, column=0, sticky="nsew")
+
+        self.gps_sats_fig, self.gps_sats_ax = plt.subplots()
+        self.gps_sats_line, = self.gps_sats_ax.plot(len(self.gps_sats_data), self.gps_sats_data)
+        self.gps_sats_canvas = FigureCanvasTkAgg(self.gps_sats_fig, self.window)
+        self.gps_sats_canvas.get_tk_widget().grid(row=4, column=1, sticky="nsew")
+
+
+        # Other random widgets that are needed
+        self.mission_data = ttk.Frame(self.window)
+        self.mission_data.grid(row=4, column=2, sticky="nsew")
+
+
+        # UI to send commands, only type the actual command i.e. CXON or ENABLE/ACTIVATE for Simulation
+        self.command_string = tk.StringVar()
+        self.command_entry_label = ttk.Label(self.mission_data, text="Command:")
+        self.command_entry_label.pack()
+        self.command_entry = ttk.Entry(self.mission_data, textvariable=self.command_string)
+        self.command_entry.pack()
+        self.command_button = ttk.Button(self.mission_data, text='Send Command', command=self.send_command)
+        self.command_button.pack()
+
+    def send_command(self):
+        print(self.command_entry.get())
 
     def generate_data(self):
         if (len(self.altitude_data) >= 5):
@@ -203,8 +236,58 @@ class Ground_Station:
         else:
             self.accel_y_data.append(np.random.randint(0,10))
 
+        if (len(self.mag_r_data) >= 5):
+            self.mag_r_data.pop(0)
+            self.mag_r_data.append(np.random.randint(0,10))
+        else:
+            self.mag_r_data.append(np.random.randint(0,10))
+
+        if (len(self.mag_y_data) >= 5):
+            self.mag_y_data.pop(0)
+            self.mag_y_data.append(np.random.randint(0,10))
+        else:
+            self.mag_y_data.append(np.random.randint(0,10))
+
+        if (len(self.mag_p_data) >= 5):
+            self.mag_p_data.pop(0)
+            self.mag_p_data.append(np.random.randint(0,20))
+        else:
+            self.mag_p_data.append(np.random.randint(0,10))
+
+        if (len(self.auto_gyro_rotate_rate_data) >= 5):
+            self.auto_gyro_rotate_rate_data.pop(0)
+            self.auto_gyro_rotate_rate_data.append(np.random.randint(0, 10))
+        else:
+            self.auto_gyro_rotate_rate_data.append(np.random.randint(0, 10))
+
+        if (len(self.gps_altitude_data) >= 5):
+            self.gps_altitude_data.pop(0)
+            self.gps_altitude_data.append(np.random.randint(0, 10))
+        else:
+            self.gps_altitude_data.append(np.random.randint(0, 10))
+
+        if (len(self.gps_latitude_data) >= 5):
+            self.gps_latitude_data.pop(0)
+            self.gps_latitude_data.append(np.random.randint(0, 10))
+        else:
+            self.gps_latitude_data.append(np.random.randint(0, 10))
+
+        if (len(self.gps_longitude_data) >= 5):
+            self.gps_longitude_data.pop(0)
+            self.gps_longitude_data.append(np.random.randint(0, 10))
+        else:
+            self.gps_longitude_data.append(np.random.randint(0,10))
+
+        if (len(self.gps_sats_data) >= 5):
+            self.gps_sats_data.pop(0)
+            self.gps_sats_data.append(np.random.randint(0,20))
+        else:
+            self.gps_sats_data.append(np.random.randint(0,10))
+            
+
     def update_plots(self):
         self.generate_data()
+
         self.alt_ax.clear()
         self.alt_ax.set_title('Altitude (m)')
         self.alt_line, = self.alt_ax.plot(range(0,len(self.altitude_data)), self.altitude_data)
@@ -255,6 +338,47 @@ class Ground_Station:
         self.accel_y_line, = self.accel_y_ax.plot(range(len(self.accel_y_data)), self.accel_y_data)
         self.accel_y_canvas.draw()
 
+        self.mag_r_ax.clear()
+        self.mag_r_ax.set_title('Roll Magnetometer (Gauss)')
+        self.mag_r_line, = self.mag_r_ax.plot(range(len(self.mag_r_data)), self.mag_r_data)
+        self.mag_r_canvas.draw()
+
+
+        self.mag_p_ax.clear()
+        self.mag_p_ax.set_title('Pitch Magnetometer (Gauss)')
+        self.mag_p_line, = self.mag_p_ax.plot(range(len(self.mag_p_data)), self.mag_p_data)
+        self.mag_p_canvas.draw()
+
+        self.mag_y_ax.clear()
+        self.mag_y_ax.set_title('Yaw Magnetometer (Gauss)')
+        self.mag_y_line, = self.mag_y_ax.plot(range(len(self.mag_y_data)), self.mag_y_data)
+        self.mag_y_canvas.draw()
+
+        self.auto_gyro_rotate_rate_ax.clear()
+        self.auto_gyro_rotate_rate_ax.set_title('Auto-Gyro Rotate Rate (m/s)')
+        self.auto_gyro_rotate_rate_line, = self.auto_gyro_rotate_rate_ax.plot(range(len(self.auto_gyro_rotate_rate_data)), self.auto_gyro_rotate_rate_data)
+        self.auto_gyro_rotate_rate_canvas.draw()
+
+        self.gps_alt_ax.clear()
+        self.gps_alt_ax.set_title('GPS Altitude (m)')
+        self.gps_alt_line, = self.gps_alt_ax.plot(range(len(self.gps_altitude_data)), self.gps_altitude_data)
+        self.gps_alt_canvas.draw()
+
+        self.gps_lat_ax.clear()
+        self.gps_lat_ax.set_title('GPS Latitude (m)')
+        self.gps_lat_line, = self.gps_lat_ax.plot(range(len(self.gps_latitude_data)), self.gps_latitude_data)
+        self.gps_lat_canvas.draw()
+
+        self.gps_lon_ax.clear()
+        self.gps_lon_ax.set_title('GPS Longitude (m)')
+        self.gps_lon_line, = self.gps_lon_ax.plot(range(len(self.gps_longitude_data)), self.gps_longitude_data)
+        self.gps_lon_canvas.draw()
+
+        self.gps_sats_ax.clear()
+        self.gps_sats_ax.set_title('GPS Satellites')
+        self.gps_sats_line, = self.gps_sats_ax.plot(range(len(self.gps_sats_data)), self.gps_sats_data)
+        self.gps_sats_canvas.draw()
+
         self.window.after(500, self.update_plots)
 
     def create_grid(self):
@@ -264,6 +388,7 @@ class Ground_Station:
         self.window.grid_columnconfigure(0, weight=1)
         self.window.grid_columnconfigure(1, weight=1)
         self.window.grid_columnconfigure(2, weight=1)
+        self.window.grid_columnconfigure(3, weight=1)
         
 
     def gui(self):
