@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import font
 
-from louis import underline
 import matplotlib.pyplot as plt
 plt.rcParams.update({'font.size': 14}) # Default font size, minimum set by mission guide
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
