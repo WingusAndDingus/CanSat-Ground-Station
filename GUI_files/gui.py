@@ -40,8 +40,14 @@ class Ground_Station:
         }
 
         ###### Any other variables can go here ######
-        self.sim_on = False
-        self.sim_active = False
+        self.sim_on: bool = False
+        self.sim_active: bool = False
+        self.can_on: bool = False
+        self.set_time_gps: bool = False
+        self.set_time: bool = False
+        self.sim_pressure: bool = False
+        self.calibrate: bool = False
+        self.mechanism_actuate: bool = False
 
         ##### This just makes the window, sets title, and allows it to be resizable #####
         self.window = tk.Tk()
@@ -185,14 +191,23 @@ class Ground_Station:
         self.command_echo_label = ttk.Label(self.mission_data, text="Last Command: ", textvariable=self.command_echo)
         self.command_echo_label.pack()
 
-        ## Mission time ##
+        # Mission Time #
         self.spacer = ttk.Label(self.mission_data)
         self.spacer.pack()
         self.mission_time = ttk.Label(self.mission_data, text="Mission Time")
         self.mission_time.pack()
-        self.clock_string = strftime('%H:%M:%S')
-        self.clock_lbl = ttk.Label(self.mission_data, text=self.clock_string)
-        self.clock_lbl.pack()
+        self.mission_clock_string = strftime('%H:%M:%S')
+        self.mission_clock_lbl = ttk.Label(self.mission_data, text=self.mission_clock_string)
+        self.mission_clock_lbl.pack()
+
+        # GPS Time #
+        self.spacer2 = ttk.Label(self.mission_data)
+        self.spacer2.pack()
+        self.gps_time = ttk.Label(self.mission_data, text="GPS Time")
+        self.gps_time.pack()
+        self.gps_clock_string = self.data['GPS_TIME']
+        self.gps_clock_lbl = ttk.Label(self.mission_data, text=self.gps_clock_string)
+        self.gps_clock_lbl.pack()
 
         ## Any notifications that need to be shown ##
         self.info_frame = ttk.Frame(self.window)
@@ -206,7 +221,8 @@ class Ground_Station:
         self.simulation_active_label = ttk.Label(self.info_frame, text="Simulation Active", background="red", font=self.underlined_font)
         self.simulation_active_label.pack()
 
-
+    # For any commands other than SIM ENABLE/ACTIVATE the booleans should be set true and then the data handler will
+    # set them back to false
     def send_command(self):
         command = self.command_entry.get()
         if command != '':
@@ -217,9 +233,27 @@ class Ground_Station:
         elif (command == "ACTIVATE" and self.sim_on):
             self.sim_active = not self.sim_active
 
+        elif (command == "CXON"):
+            self.can_on = True
+        elif (command == "CXOFF"):
+            self.can_on = False
+
+        elif (command == "ST GPS"):
+            self.set_time_gps = True
+        # elif (command == "") FIXME : Find a way to set a custom time to the CanSat
+
+        elif (command == "SIMP" and self.sim_active):
+            self.sim_pressure = not self.sim_pressure
+
+        elif (command == "CAL"):
+            self.calibrate = True
+
+        elif (command == "MEC"):
+            self.mechanism_actuate = True
 
 
 
+    # Replace this bullshit with actual data collection from CSV, somehow
     def generate_data(self):
         if (len(self.altitude_data) >= 5):
             self.altitude_data.pop(0)
@@ -332,7 +366,7 @@ class Ground_Station:
 
     def update_plots(self):
         if (not self.sim_active):
-            self.generate_data()
+            # self.generate_data()
 
             self.alt_ax.clear()
             self.alt_ax.set_title('Altitude (m)')
@@ -435,13 +469,25 @@ class Ground_Station:
         else:
             self.simulation_active_label.pack_forget()
 
-        self.clock_string = strftime('%H :%M:%S')
-        hour = int(self.clock_string[0:2])
-        rest_of_clock = self.clock_string[2:]
+        # Mission Clock
+        self.mission_clock_string = strftime('%H :%M:%S')
+        hour = int(self.mission_clock_string[0:2])
+        rest_of_clock = self.mission_clock_string[2:]
         hour += 5
         hour = hour % 24
-        self.clock_string = str(hour) + rest_of_clock
-        self.clock_lbl.config(text=self.clock_string)
+        self.mission_clock_string = str(hour) + rest_of_clock
+
+        self.mission_clock_lbl.config(text=self.mission_clock_string)
+
+        # GPS Clock
+        # self.gps_clock_string = self.data['GPS_TIME']   FIXME : Re-enable this code once GPS Time is real
+        # hour = int(self.gps_clock_string[0:2])
+        # rest_of_clock = self.gps_clock_string[2:]
+        # hour += 5
+        # hour = hour % 24
+        # self.gps_clock_string = str(hour) + rest_of_clock
+        #
+        # self.gps_clock_lbl.config(text=self.gps_clock_string)
 
 
         self.window.after(1, self.update_plots)
