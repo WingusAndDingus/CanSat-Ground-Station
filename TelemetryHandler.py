@@ -4,8 +4,13 @@ import os
 import time
 from threading import Thread
 from datetime import datetime
+from digi.xbee.devices import XBeeDevice
+
+# TESTING RECEIVING telemetry through XBee instead of Serial
+# XBee might be better if used outside of the class file
 
 class TelemetryHandler:
+    radioDevice = XBeeDevice("COM1", 9600)
     def __init__(self, team_id, port, baudrate=9600):
         """
         Initialize the telemetry handler.
@@ -15,14 +20,19 @@ class TelemetryHandler:
             port (str): Serial port for communication
             baudrate (int): Baud rate for serial communication
         """
+
         self.team_id = team_id
         self.serial_port = None
         self.is_receiving = False
         self.csv_file = None
         self.csv_writer = None
         self.packet_count = 0
-        
+        # Initialize XBee connection
+        # radioDevice = XBeeDevice("COM1", 9600)
+        # much simpler but IDK if it works?
         # Initialize serial connection
+        
+        # Original method utilizing Serial
         try:
             self.serial_port = serial.Serial(
                 port=port,
@@ -31,7 +41,7 @@ class TelemetryHandler:
             )
         except serial.SerialException as e:
             raise Exception(f"Failed to open serial port: {e}")
-            
+           
         # Define telemetry fields as per competition requirements
         self.telemetry_fields = [
             'TEAM_ID', 'MISSION_TIME', 'PACKET_COUNT', 'MODE', 'STATE',
@@ -45,11 +55,13 @@ class TelemetryHandler:
         ]
         
     def start_telemetry(self):
-        """Start receiving telemetry data."""
+        # Start receiving telemetry data. (Using Serial)
         if not self.serial_port.is_open:
             self.serial_port.open()
             
-        # Create CSV file with competition-specified naming format
+        # Using XbeeDevice
+        
+        # Create CSV file with specified naming format
         filename = f"Flight_{self.team_id}.csv"
         self.csv_file = open(filename, 'w', newline='')
         self.csv_writer = csv.writer(self.csv_file)
