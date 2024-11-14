@@ -252,7 +252,7 @@ class Ground_Station:
 
 
 
-    # Replace this bullshit with actual data collection from CSV, somehow
+    # FIXME : Replace this bullshit with actual data collection from CSV, somehow
     def generate_data(self):
         if (len(self.altitude_data) >= 5):
             self.altitude_data.pop(0)
