@@ -361,102 +361,120 @@ class Ground_Station:
             self.gps_sats_data.append(np.random.randint(0,20))
         else:
             self.gps_sats_data.append(np.random.randint(0,10))
-            
+
+    def draw_plots(self):
+        self.alt_canvas.draw()
+        self.temp_canvas.draw()
+        self.pressure_canvas.draw()
+        self.volt_canvas.draw()
+        self.gyro_r_canvas.draw()
+        self.gyro_p_canvas.draw()
+        self.gyro_y_canvas.draw()
+        self.accel_r_canvas.draw()
+        self.accel_p_canvas.draw()
+        self.accel_y_canvas.draw()
+        self.mag_r_canvas.draw()
+        self.mag_p_canvas.draw()
+        self.mag_y_canvas.draw()
+        self.auto_gyro_rotate_rate_canvas.draw()
+        self.gps_alt_canvas.draw()
+        self.gps_lat_canvas.draw()
+        self.gps_lon_canvas.draw()
+        self.gps_sats_canvas.draw()
 
     def update_plots(self):
         if (not self.sim_active):
-            # self.generate_data()
+            self.generate_data()
 
-            self.alt_ax.clear()
+            self.alt_line.set_data(range(len(self.altitude_data)), self.altitude_data)
+            self.alt_fig.gca().relim()
+            self.alt_fig.gca().autoscale_view()
             self.alt_ax.set_title('Altitude (m)')
-            self.alt_line, = self.alt_ax.plot(range(0,len(self.altitude_data)), self.altitude_data)
-            self.alt_canvas.draw()
 
-            self.temp_ax.clear()
+            self.temp_line.set_data(range(len(self.temperature_data)), self.temperature_data)
+            self.temp_fig.gca().relim()
+            self.temp_fig.gca().autoscale_view()
             self.temp_ax.set_title('Temperature (C)')
-            self.temp_line, = self.temp_ax.plot(range(len(self.temperature_data)), self.temperature_data)
-            self.temp_canvas.draw()
 
-            self.pressure_ax.clear()
+            self.pressure_line.set_data(range(len(self.pressure_data)), self.pressure_data)
+            self.pressure_fig.gca().relim()
+            self.pressure_fig.gca().autoscale_view()
             self.pressure_ax.set_title('Pressure (kPa)')
-            self.pressure_line, = self.pressure_ax.plot(range(len(self.pressure_data)), self.pressure_data)
-            self.pressure_canvas.draw()
 
-            self.volt_ax.clear()
-            self.volt_ax.set_title('Voltage (V)')
-            self.volt_line, = self.volt_ax.plot(range(len(self.voltage_data)), self.voltage_data)
-            self.volt_canvas.draw()
+            self.volt_line.set_data(range(len(self.voltage_data)), self.voltage_data)
+            self.volt_fig.gca().relim()
+            self.volt_fig.gca().autoscale_view()
+            self.volt_ax.set_title("Voltage (V)")
 
-            self.gyro_r_ax.clear()
-            self.gyro_r_ax.set_title('Gyro R (m/s)')
-            self.gyro_r_line, = self.gyro_r_ax.plot(range(len(self.gyro_r_data)), self.gyro_r_data)
-            self.gyro_r_canvas.draw()
+            self.gyro_r_line.set_data(range(len(self.gyro_r_data)), self.gyro_r_data)
+            self.gyro_r_fig.gca().relim()
+            self.gyro_r_fig.gca().autoscale_view()
+            self.gyro_r_ax.set_title("Gyro R (m/s)")
 
-            self.gyro_p_ax.clear()
-            self.gyro_p_ax.set_title('Gyro P (m/s)')
-            self.gyro_p_line, = self.gyro_p_ax.plot(range(len(self.gyro_p_data)), self.gyro_p_data)
-            self.gyro_p_canvas.draw()
+            self.gyro_p_line.set_data(range(len(self.gyro_p_data)), self.gyro_p_data)
+            self.gyro_p_fig.gca().relim()
+            self.gyro_p_fig.gca().autoscale_view()
+            self.gyro_p_ax.set_title("Gyro P (m/s)")
 
-            self.gyro_y_ax.clear()
-            self.gyro_y_ax.set_title('Gyro Y (m/s)')
-            self.gyro_y_line, = self.gyro_y_ax.plot(range(len(self.gyro_y_data)), self.gyro_y_data)
-            self.gyro_y_canvas.draw()
+            self.gyro_y_line.set_data(range(len(self.gyro_y_data)), self.gyro_y_data)
+            self.gyro_y_fig.gca().relim()
+            self.gyro_y_fig.gca().autoscale_view()
+            self.gyro_y_ax.set_title("Gyro Y (m/s)")
 
-            self.accel_r_ax.clear()
-            self.accel_r_ax.set_title('Roll Acceleration (m/s^2)')
-            self.accel_r_line, = self.accel_r_ax.plot(range(len(self.accel_r_data)), self.accel_r_data)
-            self.accel_r_canvas.draw()
+            self.accel_r_line.set_data(range(len(self.accel_r_data)), self.accel_r_data)
+            self.accel_r_fig.gca().relim()
+            self.accel_r_fig.gca().autoscale_view()
+            self.accel_r_ax.set_title("Accel R (m/s)")
 
-            self.accel_p_ax.clear()
-            self.accel_p_ax.set_title('Pitch Acceleration (m/s^2)')
-            self.accel_p_line, = self.accel_p_ax.plot(range(len(self.accel_p_data)), self.accel_p_data)
-            self.accel_p_canvas.draw()
+            self.accel_p_line.set_data(range(len(self.accel_p_data)), self.accel_p_data)
+            self.accel_p_fig.gca().relim()
+            self.accel_p_fig.gca().autoscale_view()
+            self.accel_p_ax.set_title("Accel P (m/s)")
 
-            self.accel_y_ax.clear()
-            self.accel_y_ax.set_title('Yaw Acceleration (m/s^2)')
-            self.accel_y_line, = self.accel_y_ax.plot(range(len(self.accel_y_data)), self.accel_y_data)
-            self.accel_y_canvas.draw()
+            self.accel_y_line.set_data(range(len(self.accel_y_data)), self.accel_y_data)
+            self.accel_y_fig.gca().relim()
+            self.accel_y_fig.gca().autoscale_view()
+            self.accel_y_ax.set_title("Accel Y (m/s)")
 
-            self.mag_r_ax.clear()
-            self.mag_r_ax.set_title('Roll Magnetometer (Gauss)')
-            self.mag_r_line, = self.mag_r_ax.plot(range(len(self.mag_r_data)), self.mag_r_data)
-            self.mag_r_canvas.draw()
+            self.mag_r_line.set_data(range(len(self.mag_r_data)), self.mag_r_data)
+            self.mag_r_fig.gca().relim()
+            self.mag_r_fig.gca().autoscale_view()
+            self.mag_r_ax.set_title("Roll Magnetometer (Gauss)")
 
+            self.mag_p_line.set_data(range(len(self.mag_p_data)), self.mag_p_data)
+            self.mag_p_fig.gca().relim()
+            self.mag_p_fig.gca().autoscale_view()
+            self.mag_p_ax.set_title("Pitch Magnetometer (Gauss)")
 
-            self.mag_p_ax.clear()
-            self.mag_p_ax.set_title('Pitch Magnetometer (Gauss)')
-            self.mag_p_line, = self.mag_p_ax.plot(range(len(self.mag_p_data)), self.mag_p_data)
-            self.mag_p_canvas.draw()
+            self.mag_y_line.set_data(range(len(self.mag_y_data)), self.mag_y_data)
+            self.mag_y_fig.gca().relim()
+            self.mag_y_fig.gca().autoscale_view()
+            self.mag_y_ax.set_title("Yaw Magnetometer (Gauss)")
 
-            self.mag_y_ax.clear()
-            self.mag_y_ax.set_title('Yaw Magnetometer (Gauss)')
-            self.mag_y_line, = self.mag_y_ax.plot(range(len(self.mag_y_data)), self.mag_y_data)
-            self.mag_y_canvas.draw()
-
-            self.auto_gyro_rotate_rate_ax.clear()
+            self.auto_gyro_rotate_rate_line.set_data(range(len(self.auto_gyro_rotate_rate_data)), self.auto_gyro_rotate_rate_data)
+            self.auto_gyro_rotate_rate_fig.gca().relim()
+            self.auto_gyro_rotate_rate_fig.gca().autoscale_view()
             self.auto_gyro_rotate_rate_ax.set_title('Auto-Gyro Rotate Rate (m/s)')
-            self.auto_gyro_rotate_rate_line, = self.auto_gyro_rotate_rate_ax.plot(range(len(self.auto_gyro_rotate_rate_data)), self.auto_gyro_rotate_rate_data)
-            self.auto_gyro_rotate_rate_canvas.draw()
 
-            self.gps_alt_ax.clear()
+            self.gps_alt_line.set_data(range(len(self.gps_altitude_data)), self.gps_altitude_data)
+            self.gps_alt_fig.gca().relim()
+            self.gps_alt_fig.gca().autoscale_view()
             self.gps_alt_ax.set_title('GPS Altitude (m)')
-            self.gps_alt_line, = self.gps_alt_ax.plot(range(len(self.gps_altitude_data)), self.gps_altitude_data)
-            self.gps_alt_canvas.draw()
 
-            self.gps_lat_ax.clear()
-            self.gps_lat_ax.set_title('GPS Latitude (m)')
-            self.gps_lat_line, = self.gps_lat_ax.plot(range(len(self.gps_latitude_data)), self.gps_latitude_data)
-            self.gps_lat_canvas.draw()
+            self.gps_lat_line.set_data(range(len(self.gps_latitude_data)), self.gps_latitude_data)
+            self.gps_lat_fig.gca().relim()
+            self.gps_lat_fig.gca().autoscale_view()
+            self.gps_lat_ax.set_title('GPS Latitude (deg)')
 
-            self.gps_lon_ax.clear()
-            self.gps_lon_ax.set_title('GPS Longitude (m)')
-            self.gps_lon_line, = self.gps_lon_ax.plot(range(len(self.gps_longitude_data)), self.gps_longitude_data)
-            self.gps_lon_canvas.draw()
+            self.gps_lon_line.set_data(range(len(self.gps_longitude_data)), self.gps_longitude_data)
+            self.gps_lon_fig.gca().relim()
+            self.gps_lon_fig.gca().autoscale_view()
+            self.gps_lon_ax.set_title('GPS Longitude (deg)')
 
-            self.gps_sats_ax.clear()
+            self.gps_sats_line.set_data(range(len(self.gps_sats_data)), self.gps_sats_data)
+            self.gps_sats_fig.gca().relim()
+            self.gps_sats_fig.gca().autoscale_view()
             self.gps_sats_ax.set_title('GPS Satellites')
-            self.gps_sats_line, = self.gps_sats_ax.plot(range(len(self.gps_sats_data)), self.gps_sats_data)
-            self.gps_sats_canvas.draw()
 
         if (self.sim_on):
             self.simulation_enable_label.pack()
@@ -472,9 +490,14 @@ class Ground_Station:
         self.mission_clock_string = strftime('%H :%M:%S')
         hour = int(self.mission_clock_string[0:2])
         rest_of_clock = self.mission_clock_string[2:]
+        if (hour < 12):
+            hour += 12
         hour += 5
         hour = hour % 24
-        self.mission_clock_string = str(hour) + rest_of_clock
+        if (hour == 0):
+            self.mission_clock_string = '00' + rest_of_clock
+        else:
+            self.mission_clock_string = str(hour) + rest_of_clock
 
         self.mission_clock_lbl.config(text=self.mission_clock_string)
 
@@ -488,12 +511,12 @@ class Ground_Station:
         #
         # self.gps_clock_lbl.config(text=self.gps_clock_string)
 
-
+        self.draw_plots()
         self.window.after(1, self.update_plots)
 
     def create_grid(self):
         grid = 5
-        for i in range(0,5):
+        for i in range(0,grid):
             self.window.grid_rowconfigure(i, weight=1)
         self.window.grid_columnconfigure(0, weight=1)
         self.window.grid_columnconfigure(1, weight=1)
@@ -506,12 +529,7 @@ class Ground_Station:
         height = self.window.winfo_screenheight()
         self.window.geometry("%dx%d" % (width, height))
         self.create_grid()
-        # self.window.grid_rowconfigure(0, weight=1)
-        # self.window.grid_rowconfigure(1, weight=1)
-        # self.window.grid_rowconfigure(2, weight=1)
-        # self.window.grid_rowconfigure(3, weight=1)
 
-        # self.window
         self.window.after(500, self.update_plots)
         self.window.mainloop()
 
