@@ -5,7 +5,6 @@ from tkinter import font
 
 # MatPlotLib Stuff
 import matplotlib.pyplot as plt
-plt.rcParams.update({'font.size': 14}) # Default font size, minimum set by mission guide
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 # Other Stuff
@@ -14,9 +13,11 @@ from time import *
 from datetime import datetime, timezone
 from TelemetryHandler import *
 
+plt.rcParams.update({'font.size': 14}) # Default font size, minimum set by mission guide
+
 class Ground_Station:
     def __init__(self):
-        self.data = { # I just used this as a way to get the format of the packets out, we don't need to use it for anything and can be deleted eventually if not used
+        self.data = { ### I just used this as a way to get the format of the packets out, we don't need to use it for anything and can be deleted eventually if not used ###
             'TEAM_ID': 2031, # FIXME : Add actual team id
             'MISSION_TIME': '00:00:00', # UTC time in hh:mm:ss
             'PACKET_COUNT': 0, # The total count of transmitted packets since turned on reset to zero by command when the CanSat is installed in the rocket on the launch pad at the beginning of the mission and maintained through processor reset.
@@ -53,6 +54,7 @@ class Ground_Station:
         self.sim_pressure: bool = False
         self.calibrate: bool = False
         self.mechanism_actuate: bool = False
+        self.length = 8
 
         ##### This just makes the window, sets title, and allows it to be resizable #####
         self.window = tk.Tk()
@@ -198,7 +200,7 @@ class Ground_Station:
         self.command_echo_label.pack()
 
         # Mission Time #
-        self.spacer = ttk.Label(self.mission_data)
+        self.spacer = ttk.Label(self.mission_data) # Spacer to make it more readable
         self.spacer.pack()
         self.mission_time = ttk.Label(self.mission_data, text="Mission Time (UTC)")
         self.mission_time.pack()
@@ -208,7 +210,7 @@ class Ground_Station:
         self.mission_clock_lbl.pack()
 
         # GPS Time #
-        self.spacer2 = ttk.Label(self.mission_data)
+        self.spacer2 = ttk.Label(self.mission_data) # Spacer to make it more readable
         self.spacer2.pack()
         self.gps_time = ttk.Label(self.mission_data, text="GPS Time")
         self.gps_time.pack()
@@ -235,11 +237,11 @@ class Ground_Station:
         if command != '':
             self.command_echo.set(command) # FIXME : This needs to come from the most recent packet, currently just for debugging
 
-        if (command == "ENABLE"):
+        if (command == "ENABLE"): # Simulation On
             self.sim_on = not self.sim_on
-            if (not self.sim_on):
+            if (not self.sim_on): # Ensures that the simulation does not stay "active" when turned off, just in case
                 self.sim_active = False
-        elif (command == "ACTIVATE" and self.sim_on):
+        elif (command == "ACTIVATE" and self.sim_on): # Simulation Activate
             self.sim_active = not self.sim_active
 
         elif (command == "CXON"):
@@ -247,132 +249,179 @@ class Ground_Station:
         elif (command == "CXOFF"):
             self.can_on = False
 
-        elif (command == "ST GPS"):
+        elif (command == "ST GPS"): # Set time from the GPS module
             self.set_time_gps = True
-        # elif (command == "") FIXME : Find a way to set a custom time to the CanSat
+        elif (command[0:2] == "ST"): # Set a custom time
+            print(command[3:])
 
-        elif (command == "SIMP" and self.sim_active):
+        elif (command == "SIMP" and self.sim_active): # Simulate pressures
             self.sim_pressure = not self.sim_pressure
 
-        elif (command == "CAL"):
+        elif (command == "CAL"): # Calibrate altitude
             self.calibrate = True
 
-        elif (command == "MEC"):
+        elif (command == "MEC"): # Activate mechanism
             self.mechanism_actuate = True
+
+        elif (command == "plus"):
+            self.length += 1
+        elif (command == "minus"):
+            self.length -= 1
 
 
 
     # FIXME : Replace this bullshit with actual data collection from CSV, somehow
     def generate_data(self):
-        length = 8
-        if (len(self.altitude_data) >= length):
-            self.altitude_data.pop(0)
-            self.altitude_data.append(np.random.randint(0, 10))
+        if (len(self.time) >= self.length):
             self.time.pop(0)
             self.time.append(self.time[-1]+1)
+            if (len(self.time) >= self.length):
+                self.time.pop(0)
         else:
-            self.altitude_data.append(np.random.randint(0, 10))
             self.time.append(self.time[-1] + 1)
 
-        if (len(self.temperature_data) >= length):
+        if (len(self.altitude_data) >= self.length):
+            self.altitude_data.pop(0)
+            self.altitude_data.append(np.random.randint(0, 10))
+            if (len(self.altitude_data) >= self.length):
+                self.altitude_data.pop(0)
+
+        else:
+            self.altitude_data.append(np.random.randint(0, 10))
+
+        if (len(self.temperature_data) >= self.length):
             self.temperature_data.pop(0)
             self.temperature_data.append(np.random.randint(0, 10))
+            if (len(self.temperature_data) >= self.length):
+                self.temperature_data.pop(0)
         else:
             self.temperature_data.append(np.random.randint(0, 10))
 
-        if (len(self.pressure_data) >= length):
+        if (len(self.pressure_data) >= self.length):
             self.pressure_data.pop(0)
             self.pressure_data.append(np.random.randint(0, 20))
+            if (len(self.pressure_data) >= self.length):
+                self.pressure_data.pop(0)
         else:
             self.pressure_data.append(np.random.randint(0, 20))
 
-        if (len(self.voltage_data) >= length):
+        if (len(self.voltage_data) >= self.length):
             self.voltage_data.pop(0)
             self.voltage_data.append(np.random.randint(0, 10))
+            if (len(self.voltage_data) >= self.length):
+                self.voltage_data.pop(0)
         else:
             self.voltage_data.append(np.random.randint(0, 10))
 
-        if (len(self.gyro_r_data) >= length):
+        if (len(self.gyro_r_data) >= self.length):
             self.gyro_r_data.pop(0)
             self.gyro_r_data.append(np.random.randint(0, 10))
+            if (len(self.gyro_r_data) >= self.length):
+                self.gyro_r_data.pop(0)
         else:
             self.gyro_r_data.append(np.random.randint(0, 10))
 
-        if (len(self.gyro_p_data) >= length):
+        if (len(self.gyro_p_data) >= self.length):
             self.gyro_p_data.pop(0)
             self.gyro_p_data.append(np.random.randint(0, 10))
+            if (len(self.gyro_p_data) >= self.length):
+                self.gyro_p_data.pop(0)
         else:
             self.gyro_p_data.append(np.random.randint(0, 10))
 
-        if (len(self.gyro_y_data) >= length):
+        if (len(self.gyro_y_data) >= self.length):
             self.gyro_y_data.pop(0)
             self.gyro_y_data.append(np.random.randint(0, 10))
+            if (len(self.gyro_y_data) >= self.length):
+                self.gyro_y_data.pop(0)
         else:
             self.gyro_y_data.append(np.random.randint(0, 10))
 
-        if (len(self.accel_r_data) >= length):
+        if (len(self.accel_r_data) >= self.length):
             self.accel_r_data.pop(0)
             self.accel_r_data.append(np.random.randint(0, 10))
+            if (len(self.accel_r_data) >= self.length):
+                self.accel_r_data.pop(0)
         else:
             self.accel_r_data.append(np.random.randint(0, 10))
 
-        if (len(self.accel_p_data) >= length):
+        if (len(self.accel_p_data) >= self.length):
             self.accel_p_data.pop(0)
             self.accel_p_data.append(np.random.randint(0, 20))
+            if (len(self.accel_p_data) >= self.length):
+                self.accel_p_data.pop(0)
         else:
             self.accel_p_data.append(np.random.randint(0,20))
 
-        if (len(self.accel_y_data) >= length):
+        if (len(self.accel_y_data) >= self.length):
             self.accel_y_data.pop(0)
             self.accel_y_data.append(np.random.randint(0,10))
+            if (len(self.accel_y_data) >= self.length):
+                self.accel_y_data.pop(0)
         else:
             self.accel_y_data.append(np.random.randint(0,10))
 
-        if (len(self.mag_r_data) >= length):
+        if (len(self.mag_r_data) >= self.length):
             self.mag_r_data.pop(0)
             self.mag_r_data.append(np.random.randint(0,10))
+            if (len(self.mag_r_data) >= self.length):
+                self.mag_r_data.pop(0)
         else:
             self.mag_r_data.append(np.random.randint(0,10))
 
-        if (len(self.mag_y_data) >= length):
+        if (len(self.mag_y_data) >= self.length):
             self.mag_y_data.pop(0)
             self.mag_y_data.append(np.random.randint(0,10))
+            if (len(self.mag_y_data) >= self.length):
+                self.mag_y_data.pop(0)
         else:
             self.mag_y_data.append(np.random.randint(0,10))
 
-        if (len(self.mag_p_data) >= length):
+        if (len(self.mag_p_data) >= self.length):
             self.mag_p_data.pop(0)
             self.mag_p_data.append(np.random.randint(0,20))
+            if (len(self.mag_p_data) >= self.length):
+                self.mag_p_data.pop(0)
         else:
             self.mag_p_data.append(np.random.randint(0,10))
 
-        if (len(self.auto_gyro_rotate_rate_data) >= length):
+        if (len(self.auto_gyro_rotate_rate_data) >= self.length):
             self.auto_gyro_rotate_rate_data.pop(0)
             self.auto_gyro_rotate_rate_data.append(np.random.randint(0, 10))
+            if (len(self.auto_gyro_rotate_rate_data) >= self.length):
+                self.auto_gyro_rotate_rate_data.pop(0)
         else:
             self.auto_gyro_rotate_rate_data.append(np.random.randint(0, 10))
 
-        if (len(self.gps_altitude_data) >= length):
+        if (len(self.gps_altitude_data) >= self.length):
             self.gps_altitude_data.pop(0)
             self.gps_altitude_data.append(np.random.randint(0, 10))
+            if (len(self.gps_altitude_data) >= self.length):
+                self.gps_altitude_data.pop(0)
         else:
             self.gps_altitude_data.append(np.random.randint(0, 10))
 
-        if (len(self.gps_latitude_data) >= length):
+        if (len(self.gps_latitude_data) >= self.length):
             self.gps_latitude_data.pop(0)
             self.gps_latitude_data.append(np.random.randint(0, 10))
+            if (len(self.gps_latitude_data) >= self.length):
+                self.gps_latitude_data.pop(0)
         else:
             self.gps_latitude_data.append(np.random.randint(0, 10))
 
-        if (len(self.gps_longitude_data) >= length):
+        if (len(self.gps_longitude_data) >= self.length):
             self.gps_longitude_data.pop(0)
             self.gps_longitude_data.append(np.random.randint(0, 10))
+            if (len(self.gps_longitude_data) >= self.length):
+                self.gps_longitude_data.pop(0)
         else:
             self.gps_longitude_data.append(np.random.randint(0,10))
 
-        if (len(self.gps_sats_data) >= length):
+        if (len(self.gps_sats_data) >= self.length):
             self.gps_sats_data.pop(0)
             self.gps_sats_data.append(np.random.randint(0,20))
+            if (len(self.gps_sats_data) >= self.length):
+                self.gps_sats_data.pop(0)
         else:
             self.gps_sats_data.append(np.random.randint(0,10))
 
@@ -505,7 +554,7 @@ class Ground_Station:
         self.mission_clock_lbl.config(text=self.mission_clock_string)
 
         # GPS Clock
-        # self.gps_clock_string = self.data['GPS_TIME']   FIXME : Re-enable this code once GPS Time is real
+        # self.gps_clock_string = self.data['GPS_TIME']   FIXME : Display GPS time when DAQ is real, probably replace this code
         # hour = int(self.gps_clock_string[0:2])
         # rest_of_clock = self.gps_clock_string[2:]
         # hour += 5
@@ -517,8 +566,8 @@ class Ground_Station:
         self.draw_plots()
         self.window.after(250, self.update_plots)
 
-    def create_grid(self):
-        grid = 5
+    def create_grid(self): # Creates the grid that the GUI uses to display plots
+        grid = 5 # 5 rows, 3 columns
         for i in range(0,grid):
             self.window.grid_rowconfigure(i, weight=1)
         self.window.grid_columnconfigure(0, weight=1)
@@ -526,8 +575,8 @@ class Ground_Station:
         self.window.grid_columnconfigure(2, weight=1)
         self.window.grid_columnconfigure(3, weight=1)
         
-
-    def gui(self):
+    # Current plan (I think) is to use the
+    def gui(self): # The main function that will run everything
         width = self.window.winfo_screenwidth()
         height = self.window.winfo_screenheight()
         self.window.geometry("%dx%d" % (width, height))
