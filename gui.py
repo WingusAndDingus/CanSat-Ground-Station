@@ -275,7 +275,7 @@ class Ground_Station:
         if (len(self.time) >= self.length):
             self.time.pop(0)
             self.time.append(self.time[-1]+1)
-            if (len(self.time) >= self.length):
+            if (len(self.time) > self.length):
                 self.time.pop(0)
         else:
             self.time.append(self.time[-1] + 1)
@@ -283,7 +283,7 @@ class Ground_Station:
         if (len(self.altitude_data) >= self.length):
             self.altitude_data.pop(0)
             self.altitude_data.append(np.random.randint(0, 10))
-            if (len(self.altitude_data) >= self.length):
+            if (len(self.altitude_data) > self.length):
                 self.altitude_data.pop(0)
 
         else:
@@ -292,7 +292,7 @@ class Ground_Station:
         if (len(self.temperature_data) >= self.length):
             self.temperature_data.pop(0)
             self.temperature_data.append(np.random.randint(0, 10))
-            if (len(self.temperature_data) >= self.length):
+            if (len(self.temperature_data) > self.length):
                 self.temperature_data.pop(0)
         else:
             self.temperature_data.append(np.random.randint(0, 10))
@@ -300,7 +300,7 @@ class Ground_Station:
         if (len(self.pressure_data) >= self.length):
             self.pressure_data.pop(0)
             self.pressure_data.append(np.random.randint(0, 20))
-            if (len(self.pressure_data) >= self.length):
+            if (len(self.pressure_data) > self.length):
                 self.pressure_data.pop(0)
         else:
             self.pressure_data.append(np.random.randint(0, 20))
@@ -308,7 +308,7 @@ class Ground_Station:
         if (len(self.voltage_data) >= self.length):
             self.voltage_data.pop(0)
             self.voltage_data.append(np.random.randint(0, 10))
-            if (len(self.voltage_data) >= self.length):
+            if (len(self.voltage_data) > self.length):
                 self.voltage_data.pop(0)
         else:
             self.voltage_data.append(np.random.randint(0, 10))
@@ -316,7 +316,7 @@ class Ground_Station:
         if (len(self.gyro_r_data) >= self.length):
             self.gyro_r_data.pop(0)
             self.gyro_r_data.append(np.random.randint(0, 10))
-            if (len(self.gyro_r_data) >= self.length):
+            if (len(self.gyro_r_data) > self.length):
                 self.gyro_r_data.pop(0)
         else:
             self.gyro_r_data.append(np.random.randint(0, 10))
@@ -324,7 +324,7 @@ class Ground_Station:
         if (len(self.gyro_p_data) >= self.length):
             self.gyro_p_data.pop(0)
             self.gyro_p_data.append(np.random.randint(0, 10))
-            if (len(self.gyro_p_data) >= self.length):
+            if (len(self.gyro_p_data) > self.length):
                 self.gyro_p_data.pop(0)
         else:
             self.gyro_p_data.append(np.random.randint(0, 10))
@@ -332,7 +332,7 @@ class Ground_Station:
         if (len(self.gyro_y_data) >= self.length):
             self.gyro_y_data.pop(0)
             self.gyro_y_data.append(np.random.randint(0, 10))
-            if (len(self.gyro_y_data) >= self.length):
+            if (len(self.gyro_y_data) > self.length):
                 self.gyro_y_data.pop(0)
         else:
             self.gyro_y_data.append(np.random.randint(0, 10))
@@ -340,7 +340,7 @@ class Ground_Station:
         if (len(self.accel_r_data) >= self.length):
             self.accel_r_data.pop(0)
             self.accel_r_data.append(np.random.randint(0, 10))
-            if (len(self.accel_r_data) >= self.length):
+            if (len(self.accel_r_data) > self.length):
                 self.accel_r_data.pop(0)
         else:
             self.accel_r_data.append(np.random.randint(0, 10))
@@ -348,7 +348,7 @@ class Ground_Station:
         if (len(self.accel_p_data) >= self.length):
             self.accel_p_data.pop(0)
             self.accel_p_data.append(np.random.randint(0, 20))
-            if (len(self.accel_p_data) >= self.length):
+            if (len(self.accel_p_data) > self.length):
                 self.accel_p_data.pop(0)
         else:
             self.accel_p_data.append(np.random.randint(0,20))
@@ -356,7 +356,7 @@ class Ground_Station:
         if (len(self.accel_y_data) >= self.length):
             self.accel_y_data.pop(0)
             self.accel_y_data.append(np.random.randint(0,10))
-            if (len(self.accel_y_data) >= self.length):
+            if (len(self.accel_y_data) > self.length):
                 self.accel_y_data.pop(0)
         else:
             self.accel_y_data.append(np.random.randint(0,10))
@@ -364,7 +364,7 @@ class Ground_Station:
         if (len(self.mag_r_data) >= self.length):
             self.mag_r_data.pop(0)
             self.mag_r_data.append(np.random.randint(0,10))
-            if (len(self.mag_r_data) >= self.length):
+            if (len(self.mag_r_data) > self.length):
                 self.mag_r_data.pop(0)
         else:
             self.mag_r_data.append(np.random.randint(0,10))
@@ -372,7 +372,7 @@ class Ground_Station:
         if (len(self.mag_y_data) >= self.length):
             self.mag_y_data.pop(0)
             self.mag_y_data.append(np.random.randint(0,10))
-            if (len(self.mag_y_data) >= self.length):
+            if (len(self.mag_y_data) > self.length):
                 self.mag_y_data.pop(0)
         else:
             self.mag_y_data.append(np.random.randint(0,10))
@@ -380,7 +380,7 @@ class Ground_Station:
         if (len(self.mag_p_data) >= self.length):
             self.mag_p_data.pop(0)
             self.mag_p_data.append(np.random.randint(0,20))
-            if (len(self.mag_p_data) >= self.length):
+            if (len(self.mag_p_data) > self.length):
                 self.mag_p_data.pop(0)
         else:
             self.mag_p_data.append(np.random.randint(0,10))
@@ -388,7 +388,7 @@ class Ground_Station:
         if (len(self.auto_gyro_rotate_rate_data) >= self.length):
             self.auto_gyro_rotate_rate_data.pop(0)
             self.auto_gyro_rotate_rate_data.append(np.random.randint(0, 10))
-            if (len(self.auto_gyro_rotate_rate_data) >= self.length):
+            if (len(self.auto_gyro_rotate_rate_data) > self.length):
                 self.auto_gyro_rotate_rate_data.pop(0)
         else:
             self.auto_gyro_rotate_rate_data.append(np.random.randint(0, 10))
@@ -396,7 +396,7 @@ class Ground_Station:
         if (len(self.gps_altitude_data) >= self.length):
             self.gps_altitude_data.pop(0)
             self.gps_altitude_data.append(np.random.randint(0, 10))
-            if (len(self.gps_altitude_data) >= self.length):
+            if (len(self.gps_altitude_data) > self.length):
                 self.gps_altitude_data.pop(0)
         else:
             self.gps_altitude_data.append(np.random.randint(0, 10))
@@ -404,7 +404,7 @@ class Ground_Station:
         if (len(self.gps_latitude_data) >= self.length):
             self.gps_latitude_data.pop(0)
             self.gps_latitude_data.append(np.random.randint(0, 10))
-            if (len(self.gps_latitude_data) >= self.length):
+            if (len(self.gps_latitude_data) > self.length):
                 self.gps_latitude_data.pop(0)
         else:
             self.gps_latitude_data.append(np.random.randint(0, 10))
@@ -412,7 +412,7 @@ class Ground_Station:
         if (len(self.gps_longitude_data) >= self.length):
             self.gps_longitude_data.pop(0)
             self.gps_longitude_data.append(np.random.randint(0, 10))
-            if (len(self.gps_longitude_data) >= self.length):
+            if (len(self.gps_longitude_data) > self.length):
                 self.gps_longitude_data.pop(0)
         else:
             self.gps_longitude_data.append(np.random.randint(0,10))
@@ -420,7 +420,7 @@ class Ground_Station:
         if (len(self.gps_sats_data) >= self.length):
             self.gps_sats_data.pop(0)
             self.gps_sats_data.append(np.random.randint(0,20))
-            if (len(self.gps_sats_data) >= self.length):
+            if (len(self.gps_sats_data) > self.length):
                 self.gps_sats_data.pop(0)
         else:
             self.gps_sats_data.append(np.random.randint(0,10))
