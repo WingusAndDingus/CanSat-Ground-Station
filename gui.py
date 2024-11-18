@@ -1,12 +1,18 @@
+# TKinter stuff
 import tkinter as tk
 from tkinter import ttk
 from tkinter import font
 
+# MatPlotLib Stuff
 import matplotlib.pyplot as plt
 plt.rcParams.update({'font.size': 14}) # Default font size, minimum set by mission guide
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+# Other Stuff
 import numpy as np
-from time import strftime
+from time import *
+from datetime import datetime, timezone
+from TelemetryHandler import *
 
 class Ground_Station:
     def __init__(self):
@@ -56,6 +62,7 @@ class Ground_Station:
         ##### This is where the graphs will take their data from ######
 
         # For final implementation another array for time stamps will be used (hopefully)
+        self.time = [0]
         self.altitude_data = [0]
         self.temperature_data = [0]
         self.pressure_data = [0]
@@ -193,9 +200,10 @@ class Ground_Station:
         # Mission Time #
         self.spacer = ttk.Label(self.mission_data)
         self.spacer.pack()
-        self.mission_time = ttk.Label(self.mission_data, text="Mission Time")
+        self.mission_time = ttk.Label(self.mission_data, text="Mission Time (UTC)")
         self.mission_time.pack()
-        self.mission_clock_string = strftime('%H:%M:%S')
+        # self.mission_clock_string = gmtime('%H:%M:%S')
+        self.mission_clock_string = datetime.now(timezone.utc).strftime("%H:%M:%S")
         self.mission_clock_lbl = ttk.Label(self.mission_data, text=self.mission_clock_string)
         self.mission_clock_lbl.pack()
 
@@ -229,6 +237,8 @@ class Ground_Station:
 
         if (command == "ENABLE"):
             self.sim_on = not self.sim_on
+            if (not self.sim_on):
+                self.sim_active = False
         elif (command == "ACTIVATE" and self.sim_on):
             self.sim_active = not self.sim_active
 
@@ -254,109 +264,113 @@ class Ground_Station:
 
     # FIXME : Replace this bullshit with actual data collection from CSV, somehow
     def generate_data(self):
-        if (len(self.altitude_data) >= 5):
+        length = 8
+        if (len(self.altitude_data) >= length):
             self.altitude_data.pop(0)
             self.altitude_data.append(np.random.randint(0, 10))
+            self.time.pop(0)
+            self.time.append(self.time[-1]+1)
         else:
             self.altitude_data.append(np.random.randint(0, 10))
+            self.time.append(self.time[-1] + 1)
 
-        if (len(self.temperature_data) >= 5):
+        if (len(self.temperature_data) >= length):
             self.temperature_data.pop(0)
             self.temperature_data.append(np.random.randint(0, 10))
         else:
             self.temperature_data.append(np.random.randint(0, 10))
 
-        if (len(self.pressure_data) >= 5):
+        if (len(self.pressure_data) >= length):
             self.pressure_data.pop(0)
             self.pressure_data.append(np.random.randint(0, 20))
         else:
             self.pressure_data.append(np.random.randint(0, 20))
 
-        if (len(self.voltage_data) >= 5):
+        if (len(self.voltage_data) >= length):
             self.voltage_data.pop(0)
             self.voltage_data.append(np.random.randint(0, 10))
         else:
             self.voltage_data.append(np.random.randint(0, 10))
 
-        if (len(self.gyro_r_data) >= 5):
+        if (len(self.gyro_r_data) >= length):
             self.gyro_r_data.pop(0)
             self.gyro_r_data.append(np.random.randint(0, 10))
         else:
             self.gyro_r_data.append(np.random.randint(0, 10))
 
-        if (len(self.gyro_p_data) >= 5):
+        if (len(self.gyro_p_data) >= length):
             self.gyro_p_data.pop(0)
             self.gyro_p_data.append(np.random.randint(0, 10))
         else:
             self.gyro_p_data.append(np.random.randint(0, 10))
 
-        if (len(self.gyro_y_data) >= 5):
+        if (len(self.gyro_y_data) >= length):
             self.gyro_y_data.pop(0)
             self.gyro_y_data.append(np.random.randint(0, 10))
         else:
             self.gyro_y_data.append(np.random.randint(0, 10))
 
-        if (len(self.accel_r_data) >= 5):
+        if (len(self.accel_r_data) >= length):
             self.accel_r_data.pop(0)
             self.accel_r_data.append(np.random.randint(0, 10))
         else:
             self.accel_r_data.append(np.random.randint(0, 10))
 
-        if (len(self.accel_p_data) >= 5):
+        if (len(self.accel_p_data) >= length):
             self.accel_p_data.pop(0)
             self.accel_p_data.append(np.random.randint(0, 20))
         else:
             self.accel_p_data.append(np.random.randint(0,20))
 
-        if (len(self.accel_y_data) >= 5):
+        if (len(self.accel_y_data) >= length):
             self.accel_y_data.pop(0)
             self.accel_y_data.append(np.random.randint(0,10))
         else:
             self.accel_y_data.append(np.random.randint(0,10))
 
-        if (len(self.mag_r_data) >= 5):
+        if (len(self.mag_r_data) >= length):
             self.mag_r_data.pop(0)
             self.mag_r_data.append(np.random.randint(0,10))
         else:
             self.mag_r_data.append(np.random.randint(0,10))
 
-        if (len(self.mag_y_data) >= 5):
+        if (len(self.mag_y_data) >= length):
             self.mag_y_data.pop(0)
             self.mag_y_data.append(np.random.randint(0,10))
         else:
             self.mag_y_data.append(np.random.randint(0,10))
 
-        if (len(self.mag_p_data) >= 5):
+        if (len(self.mag_p_data) >= length):
             self.mag_p_data.pop(0)
             self.mag_p_data.append(np.random.randint(0,20))
         else:
             self.mag_p_data.append(np.random.randint(0,10))
 
-        if (len(self.auto_gyro_rotate_rate_data) >= 5):
+        if (len(self.auto_gyro_rotate_rate_data) >= length):
             self.auto_gyro_rotate_rate_data.pop(0)
             self.auto_gyro_rotate_rate_data.append(np.random.randint(0, 10))
         else:
             self.auto_gyro_rotate_rate_data.append(np.random.randint(0, 10))
 
-        if (len(self.gps_altitude_data) >= 5):
+        if (len(self.gps_altitude_data) >= length):
             self.gps_altitude_data.pop(0)
             self.gps_altitude_data.append(np.random.randint(0, 10))
         else:
             self.gps_altitude_data.append(np.random.randint(0, 10))
 
-        if (len(self.gps_latitude_data) >= 5):
+        if (len(self.gps_latitude_data) >= length):
             self.gps_latitude_data.pop(0)
             self.gps_latitude_data.append(np.random.randint(0, 10))
         else:
             self.gps_latitude_data.append(np.random.randint(0, 10))
 
-        if (len(self.gps_longitude_data) >= 5):
+        if (len(self.gps_longitude_data) >= length):
             self.gps_longitude_data.pop(0)
             self.gps_longitude_data.append(np.random.randint(0, 10))
         else:
             self.gps_longitude_data.append(np.random.randint(0,10))
 
-        if (len(self.gps_sats_data) >= 5):
+        if (len(self.gps_sats_data) >= length):
             self.gps_sats_data.pop(0)
             self.gps_sats_data.append(np.random.randint(0,20))
         else:
@@ -386,92 +400,92 @@ class Ground_Station:
         if (not self.sim_active):
             self.generate_data()
 
-            self.alt_line.set_data(range(len(self.altitude_data)), self.altitude_data)
+            self.alt_line.set_data(self.time, self.altitude_data)
             self.alt_fig.gca().relim()
             self.alt_fig.gca().autoscale_view()
             self.alt_ax.set_title('Altitude (m)')
 
-            self.temp_line.set_data(range(len(self.temperature_data)), self.temperature_data)
+            self.temp_line.set_data(self.time, self.temperature_data)
             self.temp_fig.gca().relim()
             self.temp_fig.gca().autoscale_view()
             self.temp_ax.set_title('Temperature (C)')
 
-            self.pressure_line.set_data(range(len(self.pressure_data)), self.pressure_data)
+            self.pressure_line.set_data(self.time, self.pressure_data)
             self.pressure_fig.gca().relim()
             self.pressure_fig.gca().autoscale_view()
             self.pressure_ax.set_title('Pressure (kPa)')
 
-            self.volt_line.set_data(range(len(self.voltage_data)), self.voltage_data)
+            self.volt_line.set_data(self.time, self.voltage_data)
             self.volt_fig.gca().relim()
             self.volt_fig.gca().autoscale_view()
             self.volt_ax.set_title("Voltage (V)")
 
-            self.gyro_r_line.set_data(range(len(self.gyro_r_data)), self.gyro_r_data)
+            self.gyro_r_line.set_data(self.time, self.gyro_r_data)
             self.gyro_r_fig.gca().relim()
             self.gyro_r_fig.gca().autoscale_view()
             self.gyro_r_ax.set_title("Gyro R (m/s)")
 
-            self.gyro_p_line.set_data(range(len(self.gyro_p_data)), self.gyro_p_data)
+            self.gyro_p_line.set_data(self.time, self.gyro_p_data)
             self.gyro_p_fig.gca().relim()
             self.gyro_p_fig.gca().autoscale_view()
             self.gyro_p_ax.set_title("Gyro P (m/s)")
 
-            self.gyro_y_line.set_data(range(len(self.gyro_y_data)), self.gyro_y_data)
+            self.gyro_y_line.set_data(self.time, self.gyro_y_data)
             self.gyro_y_fig.gca().relim()
             self.gyro_y_fig.gca().autoscale_view()
             self.gyro_y_ax.set_title("Gyro Y (m/s)")
 
-            self.accel_r_line.set_data(range(len(self.accel_r_data)), self.accel_r_data)
+            self.accel_r_line.set_data(self.time, self.accel_r_data)
             self.accel_r_fig.gca().relim()
             self.accel_r_fig.gca().autoscale_view()
             self.accel_r_ax.set_title("Accel R (m/s)")
 
-            self.accel_p_line.set_data(range(len(self.accel_p_data)), self.accel_p_data)
+            self.accel_p_line.set_data(self.time, self.accel_p_data)
             self.accel_p_fig.gca().relim()
             self.accel_p_fig.gca().autoscale_view()
             self.accel_p_ax.set_title("Accel P (m/s)")
 
-            self.accel_y_line.set_data(range(len(self.accel_y_data)), self.accel_y_data)
+            self.accel_y_line.set_data(self.time, self.accel_y_data)
             self.accel_y_fig.gca().relim()
             self.accel_y_fig.gca().autoscale_view()
             self.accel_y_ax.set_title("Accel Y (m/s)")
 
-            self.mag_r_line.set_data(range(len(self.mag_r_data)), self.mag_r_data)
+            self.mag_r_line.set_data(self.time, self.mag_r_data)
             self.mag_r_fig.gca().relim()
             self.mag_r_fig.gca().autoscale_view()
             self.mag_r_ax.set_title("Roll Magnetometer (Gauss)")
 
-            self.mag_p_line.set_data(range(len(self.mag_p_data)), self.mag_p_data)
+            self.mag_p_line.set_data(self.time, self.mag_p_data)
             self.mag_p_fig.gca().relim()
             self.mag_p_fig.gca().autoscale_view()
             self.mag_p_ax.set_title("Pitch Magnetometer (Gauss)")
 
-            self.mag_y_line.set_data(range(len(self.mag_y_data)), self.mag_y_data)
+            self.mag_y_line.set_data(self.time, self.mag_y_data)
             self.mag_y_fig.gca().relim()
             self.mag_y_fig.gca().autoscale_view()
             self.mag_y_ax.set_title("Yaw Magnetometer (Gauss)")
 
-            self.auto_gyro_rotate_rate_line.set_data(range(len(self.auto_gyro_rotate_rate_data)), self.auto_gyro_rotate_rate_data)
+            self.auto_gyro_rotate_rate_line.set_data(self.time, self.auto_gyro_rotate_rate_data)
             self.auto_gyro_rotate_rate_fig.gca().relim()
             self.auto_gyro_rotate_rate_fig.gca().autoscale_view()
             self.auto_gyro_rotate_rate_ax.set_title('Auto-Gyro Rotate Rate (m/s)')
 
-            self.gps_alt_line.set_data(range(len(self.gps_altitude_data)), self.gps_altitude_data)
+            self.gps_alt_line.set_data(self.time, self.gps_altitude_data)
             self.gps_alt_fig.gca().relim()
             self.gps_alt_fig.gca().autoscale_view()
             self.gps_alt_ax.set_title('GPS Altitude (m)')
 
-            self.gps_lat_line.set_data(range(len(self.gps_latitude_data)), self.gps_latitude_data)
+            self.gps_lat_line.set_data(self.time, self.gps_latitude_data)
             self.gps_lat_fig.gca().relim()
             self.gps_lat_fig.gca().autoscale_view()
             self.gps_lat_ax.set_title('GPS Latitude (deg)')
 
-            self.gps_lon_line.set_data(range(len(self.gps_longitude_data)), self.gps_longitude_data)
+            self.gps_lon_line.set_data(self.time, self.gps_longitude_data)
             self.gps_lon_fig.gca().relim()
             self.gps_lon_fig.gca().autoscale_view()
             self.gps_lon_ax.set_title('GPS Longitude (deg)')
 
-            self.gps_sats_line.set_data(range(len(self.gps_sats_data)), self.gps_sats_data)
+            self.gps_sats_line.set_data(self.time, self.gps_sats_data)
             self.gps_sats_fig.gca().relim()
             self.gps_sats_fig.gca().autoscale_view()
             self.gps_sats_ax.set_title('GPS Satellites')
@@ -487,18 +501,7 @@ class Ground_Station:
             self.simulation_active_label.pack_forget()
 
         # Mission Clock
-        self.mission_clock_string = strftime('%H :%M:%S')
-        hour = int(self.mission_clock_string[0:2])
-        rest_of_clock = self.mission_clock_string[2:]
-        if (hour < 12):
-            hour += 12
-        hour += 5
-        hour = hour % 24
-        if (hour == 0):
-            self.mission_clock_string = '00' + rest_of_clock
-        else:
-            self.mission_clock_string = str(hour) + rest_of_clock
-
+        self.mission_clock_string = datetime.now(timezone.utc).strftime('%H:%M:%S')
         self.mission_clock_lbl.config(text=self.mission_clock_string)
 
         # GPS Clock
@@ -512,7 +515,7 @@ class Ground_Station:
         # self.gps_clock_lbl.config(text=self.gps_clock_string)
 
         self.draw_plots()
-        self.window.after(1, self.update_plots)
+        self.window.after(250, self.update_plots)
 
     def create_grid(self):
         grid = 5
@@ -529,6 +532,10 @@ class Ground_Station:
         height = self.window.winfo_screenheight()
         self.window.geometry("%dx%d" % (width, height))
         self.create_grid()
+
+        # handler = TelemetryHandler("2061", "COM1")
+        # handler.start_telemetry()
+        # handler._receive_telemetry() FIXME : Need to test with the XBee
 
         self.window.after(500, self.update_plots)
         self.window.mainloop()
