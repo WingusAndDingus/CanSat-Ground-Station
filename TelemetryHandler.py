@@ -10,7 +10,6 @@ from digi.xbee.devices import XBeeDevice
 # XBee might be better if used outside of the class file
 
 class TelemetryHandler:
-    radioDevice = XBeeDevice("COM1", 9600)
     def __init__(self, team_id, port, baudrate=9600):
         """
         Initialize the telemetry handler.
